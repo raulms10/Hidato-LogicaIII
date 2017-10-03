@@ -19,6 +19,7 @@ public class Nodo {
         this.valor = numero;
         this.fila = fila;
         this.columna = columna;
+        this.visitado = false;
     }
     
     public int getFila() {

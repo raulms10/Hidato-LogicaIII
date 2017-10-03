@@ -6,7 +6,9 @@
 package hidato;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Random;
+import java.util.Vector;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -17,9 +19,12 @@ public class Tablero extends javax.swing.JFrame {
     
     public int filas = 4;
     public int columnas = 4;
-    public int dificultad = 2;
-    
-    
+    public int dificultad = 3;
+    private boolean exito = false;
+    long semilla = Calendar.getInstance().getTimeInMillis();
+        //System.out.println("Semilla: " + semilla);
+    Random random = new Random();
+    ArrayList<DefaultTableModel> soluciones = new ArrayList<DefaultTableModel>();
     DefaultTableModel modelTablero;
     
     
@@ -28,7 +33,12 @@ public class Tablero extends javax.swing.JFrame {
      */
     public Tablero() {
         initComponents();
-        generarTablero();
+        jcbDificultad.removeAllItems();
+        jcbDificultad.addItem("1");
+        jcbDificultad.addItem("2");
+        jcbDificultad.addItem("3");
+        
+        //generarTablero();
     }
 
     /**
@@ -42,6 +52,13 @@ public class Tablero extends javax.swing.JFrame {
 
         jScrollPane1 = new javax.swing.JScrollPane();
         jTableTablero = new javax.swing.JTable();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        btnGenerar = new javax.swing.JButton();
+        jTextFil = new javax.swing.JTextField();
+        jTextCol = new javax.swing.JTextField();
+        jcbDificultad = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -58,25 +75,85 @@ public class Tablero extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(jTableTablero);
 
+        jLabel1.setText("Filas:");
+
+        jLabel2.setText("Columnas:");
+
+        jLabel3.setText("Dificultad:");
+
+        btnGenerar.setText("Generar");
+        btnGenerar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGenerarActionPerformed(evt);
+            }
+        });
+
+        jTextCol.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextColActionPerformed(evt);
+            }
+        });
+
+        jcbDificultad.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(45, 45, 45)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 301, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(54, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 438, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addGap(3, 3, 3)
+                        .addComponent(jTextFil, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel2)
+                        .addGap(4, 4, 4)
+                        .addComponent(jTextCol, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel3)
+                        .addGap(2, 2, 2)
+                        .addComponent(jcbDificultad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnGenerar)))
+                .addContainerGap(73, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(78, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(69, 69, 69))
+                .addGap(12, 12, 12)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(jLabel2)
+                    .addComponent(jTextFil, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jTextCol, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jcbDificultad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel3)
+                    .addComponent(btnGenerar))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 102, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(56, 56, 56))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jTextColActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextColActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextColActionPerformed
+
+    private void btnGenerarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerarActionPerformed
+        
+        filas = Integer.valueOf(jTextFil.getText());
+        columnas = Integer.valueOf(jTextCol.getText());
+        dificultad = Integer.valueOf(jcbDificultad.getItemAt(jcbDificultad.getSelectedIndex()));
+        if (filas <= 0 || columnas <= 0) {
+            System.out.println("Las filas o columnas debe ser mayor qeu 0");            
+        }
+        generarTablero();
+    }//GEN-LAST:event_btnGenerarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -114,61 +191,187 @@ public class Tablero extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnGenerar;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTableTablero;
+    private javax.swing.JTextField jTextCol;
+    private javax.swing.JTextField jTextFil;
+    private javax.swing.JComboBox<String> jcbDificultad;
     // End of variables declaration//GEN-END:variables
     
-    private void creeTablero(){
-        int fRandom = new Random().nextInt(filas);
-        int cRandom = new Random().nextInt(columnas);
+    private DefaultTableModel creeTablero(){
+        semilla = Calendar.getInstance().getTimeInMillis();
+        random.setSeed(semilla);
+        int fRandom = random.nextInt(filas)+1;
+        int cRandom = random.nextInt(columnas)+1;
         System.out.println("Valor: " + fRandom + " " + cRandom);
         Nodo n = new Nodo(1, fRandom, cRandom);
         //Nodo n = new Nodo(1, 0, 0);
+        //imprimirVecinos(calculeVecinos(n));
+        modelTablero.setValueAt(1, fRandom-1, cRandom-1);
         busqueSolucion(n);
-        
+        System.out.println("Se han encontrado " + soluciones.size()+ " soluciones");
+        int sol = random.nextInt(soluciones.size()); 
+        System.out.println("Mostrando solución "+sol);
+        return soluciones.get(sol);
     }
     
     private void generarTablero() {
         modelTablero = new DefaultTableModel(filas, columnas);
+        modelTablero = creeTablero();
         jTableTablero.setModel(modelTablero);
         jTableTablero.getTableHeader().setUI(null);
-        creeTablero();
+        
+        DefaultTableModel model = new DefaultTableModel(filas, columnas);
+        jTableTablero.setModel(model);
+        
+        int casillasMostrar = 90 - dificultad*20;
+        casillasMostrar = (int)casillasMostrar*filas*columnas/100;
+        
+        System.out.println("Casillas: " + casillasMostrar);
+        
+        semilla = Calendar.getInstance().getTimeInMillis();
+        random.setSeed(semilla);
+        //modelTablero = new DefaultTableModel(filas, columnas);
+        int auxFil, auxCol;
+        
+        for(int i=0; i<casillasMostrar; i++){
+            auxFil = random.nextInt(filas);
+            auxCol = random.nextInt(columnas);
+            if(model.getValueAt(auxFil, auxCol) != null){
+                i--;
+            }else{
+                model.setValueAt(modelTablero.getValueAt(auxFil, auxCol), auxFil, auxCol);
+            }
+        }
+        //System.out.println("SOL: " + vectorSol);
+        
+       
+        //imprimirTablero(model);
+        
     }
     
-    private void imprimirNodos(ArrayList<Nodo> lista){
+    private void imprimirVecinos(ArrayList<Nodo> lista){
         for(Nodo n: lista){
             System.out.println("Valor: " + n.getNumero() + " F: " + n.getFila() + " C: " + n.getColumna());
         }
     }
     
-    public boolean esValidoVecino(Nodo n){
+    private void imprimirTablero(DefaultTableModel tablero){
+        for(int i = 0; i < filas; i++){
+            for(int j = 0; j < columnas; j++){
+                System.out.print("  "+tablero.getValueAt(i, j)+"  ");
+            }
+            System.out.println(" ");
+        }
+    }
+    
+    private boolean esValidoVecino(Nodo n){
         return !calculeVecinos(n).isEmpty() || n.getNumero() >= filas*columnas;
     }
 
+    /*private void busqueSolucion(Nodo nodo) {
+        //modelTablero.setValueAt(nodo.getNumero(), nodo.getFila()-1, nodo.getColumna()-1);
+        ArrayList<Nodo> vecinos = calculeVecinos(nodo);
+        //imprimirNodos(vecinos);
+        Nodo v;
+        int totalV = vecinos.size();
+        int i = 0;
+        while(i < totalV && !exito){
+            v = vecinos.get(i);
+            if(esValidoVecino(v) && !v.isVisitado()){
+                modelTablero.setValueAt(v.getNumero(), v.getFila()-1, v.getColumna()-1); //escriba(nodo)
+                if(v.getNumero() < filas*columnas){
+                    busqueSolucion(v);
+                    if(!exito){
+                        modelTablero.setValueAt(null, v.getFila()-1, v.getColumna()-1);
+                        v.setVisitado(true);
+                    }
+                }else{
+                    System.out.println("Una solución");
+                    imprimirTablero();
+                    exito = true;
+                }
+                
+            }            
+        
+        }
+    }*/ //Intentar mostrar una solución
+    
     private void busqueSolucion(Nodo nodo) {
+        //modelTablero.setValueAt(nodo.getNumero(), nodo.getFila()-1, nodo.getColumna()-1);
         ArrayList<Nodo> vecinos = calculeVecinos(nodo);
         //imprimirNodos(vecinos);
         for(Nodo v: vecinos){
-            if(esValidoVecino(v)){
-                //modelTablero.setValueAt(v, ERROR, columnas); escriba(nodo)
-            }
-            
+            if(esValidoVecino(v) && !v.isVisitado()){
+                modelTablero.setValueAt(v.getNumero(), v.getFila()-1, v.getColumna()-1); //escriba(nodo)
+                if(v.getNumero() < filas*columnas){
+                    busqueSolucion(v);
+                }else{
+                    //System.out.println("Una solución");
+                    //imprimirTablero(modelTablero);
+                    soluciones.add(nuevoTablero(modelTablero));
+                }
+                modelTablero.setValueAt(null, v.getFila()-1, v.getColumna()-1);
+                v.setVisitado(true);
+            }            
         }
-        
-    }
+    } //Todas las soluciones usando la variable local
+    
+    /*private void busqueSolucion(Nodo nodo, DefaultTableModel actualTablero) {
+        //modelTablero.setValueAt(nodo.getNumero(), nodo.getFila()-1, nodo.getColumna()-1);
+        ArrayList<Nodo> vecinos = calculeVecinos(nodo);
+        //imprimirNodos(vecinos);
+        for(Nodo v: vecinos){
+            if(esValidoVecino(v) && !v.isVisitado()){
+                actualTablero.setValueAt(v.getNumero(), v.getFila()-1, v.getColumna()-1); //escriba(nodo)
+                if(v.getNumero() < filas*columnas){
+                    busqueSolucion(v, actualTablero);
+                }else{
+                    System.out.println("Una solución");
+                    imprimirTablero(actualTablero);
+                    soluciones.add(actualTablero);
+                }
+                actualTablero.setValueAt(null, v.getFila()-1, v.getColumna()-1);
+                v.setVisitado(true);
+            }            
+        }
+    }*/ //Encuentra todas las soluciones enviando como parámetro
 
     private ArrayList<Nodo> calculeVecinos(Nodo nodo) {
         ArrayList<Nodo> v = new ArrayList<Nodo>();
         int f = nodo.getFila(); int c = nodo.getColumna();
         for(int i = f-1; i <= f+1; i++){
             for(int j = c-1; j <= c+1; j++){
-                if((i >= 0 && j >= 0 && i < filas && j < columnas) && (i != f || j != c)){
-                    if(modelTablero.getValueAt(i, j) == null){
+                if((i > 0 && j > 0 && i <= filas && j <= columnas) && (i != f || j != c)){
+                    if(modelTablero.getValueAt(i-1, j-1) == null){
                         v.add(new Nodo(nodo.getNumero()+1, i, j));
                     }
                 }
             }
         }
-        return v;
+        int total = v.size(); int pos;
+        ArrayList<Nodo> veci = new ArrayList<Nodo>();
+        semilla = Calendar.getInstance().getTimeInMillis();
+        random.setSeed(semilla);
+        for(int i=0; i<total; i++){
+            pos = random.nextInt(v.size());
+            veci.add(v.get(pos));
+            v.remove(pos);
+        }
+        return veci;
+    }
+
+    private DefaultTableModel nuevoTablero(DefaultTableModel modelTablero) {
+        DefaultTableModel nuevo = new DefaultTableModel(filas, columnas);
+        for(int i = 0; i < filas; i++){
+            for(int j = 0; j < columnas; j++){
+                nuevo.setValueAt(modelTablero.getValueAt(i, j), i, j);
+            }
+        }
+        return nuevo;
     }
 }
