@@ -9,21 +9,19 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import javax.swing.UIManager;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
-import sun.swing.table.DefaultTableCellHeaderRenderer;
 
 /**
  *
@@ -47,12 +45,15 @@ public class Tablero extends javax.swing.JFrame {
      * Creates new form Tablero
      */
     public Tablero() {
+        //UIManager.setLookAndFeel(new UpperEssentialLookAndFeel());
         initComponents();
         jcbDificultad.removeAllItems();
         jcbDificultad.addItem("1");
         jcbDificultad.addItem("2");
         jcbDificultad.addItem("3");
         jcbDificultad.setSelectedIndex(1);
+        this.setLocation(500, 250);
+        this.setResizable(false);     
 
         //generarTablero();
     }
@@ -66,21 +67,49 @@ public class Tablero extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPanel1 = new javax.swing.JPanel();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
+        jTextFil = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
+        jTextCol = new javax.swing.JTextField();
+        jLabel3 = new javax.swing.JLabel();
+        jcbDificultad = new javax.swing.JComboBox<>();
+        btnGenerar = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTableTablero = new javax.swing.JTable();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        btnGenerar = new javax.swing.JButton();
-        jTextFil = new javax.swing.JTextField();
-        jTextCol = new javax.swing.JTextField();
-        jcbDificultad = new javax.swing.JComboBox<>();
-        jbtnGuardarPNG = new javax.swing.JButton();
         jbtnGuardarTexto = new javax.swing.JButton();
+        jbtnGuardarPNG = new javax.swing.JButton();
         jbtnSolucionar = new javax.swing.JButton();
+        jLabel5 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        jLabel4.setFont(new java.awt.Font("Bitstream Charter", 0, 36)); // NOI18N
+        jLabel4.setText("Hidato");
+
+        jLabel1.setText("Filas:");
+
+        jLabel2.setText("Columnas:");
+
+        jTextCol.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextColActionPerformed(evt);
+            }
+        });
+
+        jLabel3.setText("Dificultad:");
+
+        jcbDificultad.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        btnGenerar.setText("Generar");
+        btnGenerar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGenerarActionPerformed(evt);
+            }
+        });
+
+        jTableTablero.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         jTableTablero.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {},
@@ -92,35 +121,12 @@ public class Tablero extends javax.swing.JFrame {
 
             }
         ));
+        jTableTablero.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
+        jTableTablero.setGridColor(new java.awt.Color(1, 1, 1));
+        jTableTablero.setRowSelectionAllowed(false);
+        jTableTablero.setSelectionBackground(new java.awt.Color(168, 106, 231));
+        jTableTablero.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jScrollPane1.setViewportView(jTableTablero);
-
-        jLabel1.setText("Filas:");
-
-        jLabel2.setText("Columnas:");
-
-        jLabel3.setText("Dificultad:");
-
-        btnGenerar.setText("Generar");
-        btnGenerar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnGenerarActionPerformed(evt);
-            }
-        });
-
-        jTextCol.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextColActionPerformed(evt);
-            }
-        });
-
-        jcbDificultad.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
-        jbtnGuardarPNG.setText("Guardar como PNG");
-        jbtnGuardarPNG.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jbtnGuardarPNGActionPerformed(evt);
-            }
-        });
 
         jbtnGuardarTexto.setText("Guardar como Texto");
         jbtnGuardarTexto.addActionListener(new java.awt.event.ActionListener() {
@@ -129,51 +135,67 @@ public class Tablero extends javax.swing.JFrame {
             }
         });
 
-        jbtnSolucionar.setText("Solucionar");
+        jbtnGuardarPNG.setText("Guardar como PNG");
+        jbtnGuardarPNG.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbtnGuardarPNGActionPerformed(evt);
+            }
+        });
+
+        jbtnSolucionar.setText("Solución");
         jbtnSolucionar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jbtnSolucionarActionPerformed(evt);
             }
         });
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(45, 45, 45)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel1)
-                                .addGap(3, 3, 3)
-                                .addComponent(jTextFil, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+        jLabel5.setFont(new java.awt.Font("Bitstream Charter", 0, 36)); // NOI18N
+        jLabel5.setText("Tablero generado");
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                            .addComponent(jbtnGuardarTexto)
+                            .addGap(32, 32, 32)
+                            .addComponent(jbtnGuardarPNG)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jbtnSolucionar))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 474, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addGap(3, 3, 3)
+                        .addComponent(jTextFil, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel5)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jLabel2)
-                                .addGap(4, 4, 4)
-                                .addComponent(jTextCol, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(jLabel3)
-                                .addGap(2, 2, 2)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addComponent(jTextCol, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jLabel3))
+                                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jcbDificultad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnGenerar))
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 438, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jbtnGuardarTexto)
-                        .addGap(18, 18, 18)
-                        .addComponent(jbtnGuardarPNG)
-                        .addGap(77, 77, 77)
-                        .addComponent(jbtnSolucionar)))
-                .addContainerGap(73, Short.MAX_VALUE))
+                                .addComponent(btnGenerar)))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(12, 12, 12)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addGap(15, 15, 15)
+                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(jLabel2)
                     .addComponent(jTextFil, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -181,14 +203,30 @@ public class Tablero extends javax.swing.JFrame {
                     .addComponent(jcbDificultad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel3)
                     .addComponent(btnGenerar))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 102, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(15, 15, 15)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jbtnGuardarPNG)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jbtnGuardarTexto)
+                    .addComponent(jbtnGuardarPNG)
                     .addComponent(jbtnSolucionar))
-                .addContainerGap())
+                .addContainerGap(26, Short.MAX_VALUE))
+        );
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
@@ -209,7 +247,7 @@ public class Tablero extends javax.swing.JFrame {
                 return;
                 //System.out.println("Las filas o columnas debe ser mayor que 0");            
             }
-        } catch (NumberFormatException e) {
+        }catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(rootPane, "Digite sólo números", "Error de formato", JOptionPane.ERROR_MESSAGE);
             return;
         }
@@ -222,7 +260,12 @@ public class Tablero extends javax.swing.JFrame {
         segundos = (fin - inicio) / 1000;
         System.out.println("Tardó: " + segundos + " segundos");
         encuentrePistas();
-        colorearTablero();
+        //colorearTablero();
+        MyRenderer myRenderer = new MyRenderer();
+        myRenderer.setInicial(nuevoTablero((DefaultTableModel) jTableTablero.getModel()));
+        jTableTablero.setDefaultRenderer(Object.class, myRenderer);
+        jTableTablero.setShowGrid(true);
+        jTableTablero.setGridColor(Color.BLACK);
     }//GEN-LAST:event_btnGenerarActionPerformed
 
     private void jbtnGuardarPNGActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnGuardarPNGActionPerformed
@@ -307,6 +350,9 @@ public class Tablero extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTableTablero;
     private javax.swing.JTextField jTextCol;
@@ -340,6 +386,7 @@ public class Tablero extends javax.swing.JFrame {
 
     private void generarTablero() {
         modelTablero = new DefaultTableModel(filas, columnas);
+        //jTableTablero
         modelTablero = creeTablero();
         if (modelTablero == null) {
             System.out.println("Error, vuelva a intentarlo");
@@ -392,12 +439,12 @@ public class Tablero extends javax.swing.JFrame {
     }
 
     private boolean esValidoVecino(Nodo n) {
-        return !calculeVecinos(n).isEmpty() || n.getNumero() >= filas * columnas;
+        return !calculeVecinos(n, modelTablero).isEmpty() || n.getNumero() >= filas * columnas;
     }
 
     private void busqueSolucion(Nodo nodo) {
         //modelTablero.setValueAt(nodo.getNumero(), nodo.getFila()-1, nodo.getColumna()-1);
-        ArrayList<Nodo> vecinos = calculeVecinos(nodo);
+        ArrayList<Nodo> vecinos = calculeVecinos(nodo, modelTablero);
         //imprimirNodos(vecinos);
         if (!exito) {
             for (Nodo v : vecinos) {
@@ -462,20 +509,20 @@ public class Tablero extends javax.swing.JFrame {
             }            
         }
     }*/ //Encuentra todas las soluciones enviando como parámetro
-    private ArrayList<Nodo> calculeVecinos(Nodo nodo) {
+    private ArrayList<Nodo> calculeVecinos(Nodo nodo, DefaultTableModel model) {
         ArrayList<Nodo> v = new ArrayList<Nodo>();
         int f = nodo.getFila();
         int c = nodo.getColumna();
         for (int i = f - 1; i <= f + 1; i++) {
             for (int j = c - 1; j <= c + 1; j++) {
                 if ((i > 0 && j > 0 && i <= filas && j <= columnas) && (i != f || j != c)) {
-                    if (modelTablero.getValueAt(i - 1, j - 1) == null) {
+                    if (model.getValueAt(i - 1, j - 1) == null) {
                         v.add(new Nodo(nodo.getNumero() + 1, i, j));
                     }
                 }
             }
         }
-        int total = v.size();
+        /*int total = v.size();
         int pos;
         ArrayList<Nodo> veci = new ArrayList<Nodo>();
         semilla = Calendar.getInstance().getTimeInMillis();
@@ -485,7 +532,8 @@ public class Tablero extends javax.swing.JFrame {
             veci.add(v.get(pos));
             v.remove(pos);
         }
-        return veci;
+        return veci;*/
+        return v;
     }
 
     private DefaultTableModel nuevoTablero(DefaultTableModel modelTablero) {
@@ -518,7 +566,6 @@ public class Tablero extends javax.swing.JFrame {
         } catch (IOException ioe) {
             //System.out.println("write: " + ioe.getMessage());
             JOptionPane.showMessageDialog(rootPane, "No se ha podido guardar la imagen", "Error de almacenamiento", JOptionPane.ERROR_MESSAGE);
-            return;
         }
     }
 
@@ -547,9 +594,19 @@ public class Tablero extends javax.swing.JFrame {
     }
 
     private void encuentrePistas() {
-        listPistas.add(new Nodo(23, 1, 9));
-        listPistas.add(new Nodo(45, 5, 1));
-        listPistas.add(new Nodo(42, 1, 6));
+        DefaultTableModel model = (DefaultTableModel) jTableTablero.getModel();
+        Nodo n = new Nodo();
+        for (int i = 0; i < filas; i++) {
+            for (int j = 0; j < columnas; j++) {
+                if(model.getValueAt(i, j) != null){
+                    listPistas.add(new Nodo(1, i+1, j+1));     
+                }
+            }
+        }
+        
+        //listPistas.add(new Nodo(23, 1, 9));
+        //listPistas.add(new Nodo(45, 5, 1));
+        //listPistas.add(new Nodo(42, 1, 6));
     }
 
     private void colorearTablero() {
@@ -579,4 +636,47 @@ public class Tablero extends javax.swing.JFrame {
         }
         //jTableTablero.setModel(modelColor);
     }
+    
+    public class MyRenderer extends DefaultTableCellRenderer{
+        
+        private DefaultTableModel inicial;
+        private Nodo actual = new Nodo();
+        
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,boolean hasFocus, int row, int column) {
+            Component cell = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            
+            cell.setForeground(Color.BLACK); //Letra de casillas ocupadas
+            
+            
+            if(inicial.getValueAt(row, column) != null){
+                cell.setBackground(new Color(102, 178, 255)); //Fondo casillas ocupadas
+                
+                //cell.
+                if(inicial.getValueAt(row, column).equals(1)){
+                    //cell.setBackground(Color.LIGHT_GRAY);
+                    cell.setForeground(Color.RED); //Letra de primero
+                }
+                if(inicial.getValueAt(row, column).equals(filas*columnas)){
+                    //cell.setBackground(Color.LIGHT_GRAY);
+                    cell.setForeground(Color.RED); //Letra de último
+                }
+                
+            }else{
+                cell.setBackground(new Color(0, 128, 255)); //Fondo de casillas vacías               
+            }
+            
+            return cell;
+        }
+        
+        public DefaultTableModel getInicial() {
+            return inicial;
+        }
+
+        public void setInicial(DefaultTableModel inicial) {
+            this.inicial = inicial;
+        }       
+    }
+    
+    
 }

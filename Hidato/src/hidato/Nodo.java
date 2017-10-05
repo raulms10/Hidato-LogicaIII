@@ -21,6 +21,11 @@ public class Nodo {
         this.columna = columna;
         this.visitado = false;
     }
+
+    public Nodo() {
+    }
+    
+    
     
     public int getFila() {
         return fila;
