@@ -8,10 +8,11 @@ package hidato;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics2D;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -21,6 +22,7 @@ import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
@@ -41,8 +43,8 @@ public class Tablero extends javax.swing.JFrame {
     private boolean exito = false;
     private boolean cargado = false; 
     long semilla = Calendar.getInstance().getTimeInMillis();
-    long segundos;
-    private JFileChooser fileChooser;//
+    float segundos;
+    private JFileChooser fileChooser; // Selector de archivos
     //System.out.println("Semilla: " + semilla);
     Random random = new Random();
     ArrayList<DefaultTableModel> soluciones = new ArrayList<DefaultTableModel>();
@@ -67,6 +69,8 @@ public class Tablero extends javax.swing.JFrame {
         
         fileChooser =  new JFileChooser(); //Inicializamos el selector de archivos
         fileChooser.setDialogTitle("Seleccione el archivo TXT del tablero");
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("Archivos de texto (*.txt)", "txt");
+        fileChooser.setFileFilter(filter);
         //ImageIcon im = new ImageIcon(getClass().getResource("equipo.jpg"));
         //setIconImage(im.getImage());
 
@@ -270,18 +274,13 @@ public class Tablero extends javax.swing.JFrame {
         //imprimirTablero(modelTablero);
         //System.out.println("FC: "+modelTablero.getColumnCount()+" "+modelTablero.getRowCount());
         long fin = System.currentTimeMillis();
-        segundos = (fin - inicio) / 1000; //Obtenemos el tiempo en segundos
-        //System.out.println("Tardó: " + segundos + " segundos");
+        segundos = (float) ((fin - inicio) / 1000.0); //Obtenemos el tiempo en segundos
+        System.out.println("Tardó: " + segundos + " segundos " + "i: " + inicio + " f: " + fin);
         encuentrePistas(); //Hallamos las pistas y las añadimos a
         //colorearTablero();
         //Creamos nuestro Renderer para poder editar los colores a las celdas
-        MyRenderer myRenderer = new MyRenderer();
-        myRenderer.setInicial(nuevoTablero((DefaultTableModel) jTableTablero.getModel()));
-        myRenderer.setSolucion(modelTablero);
-        jTableTablero.setDefaultRenderer(Object.class, myRenderer);
-        //Modificamos y habilitamos las cuadrículas a la tabla
-        jTableTablero.setShowGrid(true);
-        jTableTablero.setGridColor(Color.BLACK);
+        modificarRenderer();
+        
         cargado = false;
         jLblTablero.setText("Tablero generado");
     }//GEN-LAST:event_btnGenerarActionPerformed
@@ -343,18 +342,42 @@ public class Tablero extends javax.swing.JFrame {
     }//GEN-LAST:event_jbtnSolucionarActionPerformed
 
     private void btnCargarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCargarActionPerformed
-        
+        //Invocamos el selector de archivos
         int res = fileChooser.showOpenDialog(this);
-        
+        File file = null;
+        //Comprobamos el resultado del selector
         if (res == JFileChooser.APPROVE_OPTION) {
-            File file = fileChooser.getSelectedFile();
-            //This is where a real application would open the file.
-            System.out.println("Opening: " + file.getName() + "   " + file.getAbsolutePath());
+            file = fileChooser.getSelectedFile();
+            System.out.println("Abriendo: " + file.getName() + "   " + file.getAbsolutePath());
         } else {
-            System.out.println("Open command cancelled by user");
             return;
         }
-
+        
+        //Verificamos que esté permitido el acceso al archivo seleccionado
+        if(file.canRead()){
+            try {
+                String linea;
+                FileReader fr = new FileReader(file);
+                BufferedReader br = new BufferedReader(fr);
+                //Leeemos el archivo línea a línea
+                while ((linea = br.readLine()) != null) {
+                    System.out.println(linea);
+                }
+                fr.close();
+                br.close();
+            } catch (FileNotFoundException ex) {
+                JOptionPane.showMessageDialog(rootPane, "No se ha encontrado el archivo", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(rootPane, "Ha ocurrido un error en la lectura del archivo", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+        }else{
+            JOptionPane.showMessageDialog(rootPane, "El archivo no pudo ser léido", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        modificarRenderer();
         jLblTablero.setText("Tablero cargado");
         cargado = true;
     }//GEN-LAST:event_btnCargarActionPerformed
@@ -700,6 +723,16 @@ public class Tablero extends javax.swing.JFrame {
         System.out.println("Sol otro lado");
     }
 
+    private void modificarRenderer() {
+        MyRenderer myRenderer = new MyRenderer();
+        myRenderer.setInicial(nuevoTablero((DefaultTableModel) jTableTablero.getModel()));
+        //myRenderer.setSolucion(modelTablero);
+        jTableTablero.setDefaultRenderer(Object.class, myRenderer);
+        //Modificamos y habilitamos las cuadrículas a la tabla
+        jTableTablero.setShowGrid(true);
+        jTableTablero.setGridColor(Color.BLACK);
+    }
+
     /*private void colorearTablero() {
         DefaultTableModel modelColor = (DefaultTableModel) jTableTablero.getModel();
         DefaultTableCellRenderer dr = (DefaultTableCellRenderer) jTableTablero.getDefaultRenderer(String.class);
@@ -732,7 +765,6 @@ public class Tablero extends javax.swing.JFrame {
     public class MyRenderer extends DefaultTableCellRenderer{
         
         private DefaultTableModel inicial; //Tablero con las pistas
-        private DefaultTableModel solucion; //Tablero con la solución
         private Nodo actual = new Nodo(); //Nodo del tablero
         
         //Este método se ejecuta cada vez que se cambie algún valor en el tablero
@@ -745,18 +777,19 @@ public class Tablero extends javax.swing.JFrame {
             cell.setForeground(Color.BLACK); //Letra de casillas ocupadas
             
             //Se le cambia el color de la letra a la primera casilla del juego
-            if(solucion.getValueAt(row, column).equals(1)){
+            
+            if(value != null && value.equals(1)){
                     //cell.setBackground(Color.LIGHT_GRAY);
                 cell.setForeground(Color.RED); //Letra de primero
             }
             //Se le cambia el color de la letra a la última casilla del juego
-            if(solucion.getValueAt(row, column).equals(filas*columnas)){
+            if(value != null && value.equals(filas*columnas)){
                     //cell.setBackground(Color.LIGHT_GRAY);
                     cell.setForeground(Color.RED); //Letra de último
             }
             
             //Se verifica que la celda(casilla) sea una pista
-            if(inicial.getValueAt(row, column) != null){
+            if(value != null){
                 cell.setBackground(new Color(102, 178, 255)); //Fondo casillas ocupadas (pistas)
             }else{
                 cell.setBackground(new Color(0, 128, 255)); //Fondo de casillas vacías               
@@ -765,15 +798,7 @@ public class Tablero extends javax.swing.JFrame {
             return cell;
         }
 
-        //Getter and Setter methods
-        public DefaultTableModel getSolucion() {
-            return solucion;
-        }
-
-        public void setSolucion(DefaultTableModel solucion) {
-            this.solucion = solucion;
-        }
-        
+        //Getter and Setter methods     
         public DefaultTableModel getInicial() {
             return inicial;
         }
