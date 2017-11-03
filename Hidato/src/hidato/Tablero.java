@@ -8,6 +8,8 @@ package hidato;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics2D;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileWriter;
@@ -16,11 +18,11 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Random;
 import javax.imageio.ImageIO;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellRenderer;
 
 /**
  *
@@ -30,11 +32,17 @@ public class Tablero extends javax.swing.JFrame {
 
     private int filas = 4;
     private int columnas = 4;
+    private int fPrimero;
+    private int cPrimero;
+    private int fUltimo;
+    private int cUltimo;
     private int dificultad = 3;
     ArrayList<Nodo> listPistas;
     private boolean exito = false;
+    private boolean cargado = false; 
     long semilla = Calendar.getInstance().getTimeInMillis();
     long segundos;
+    private JFileChooser fileChooser;//
     //System.out.println("Semilla: " + semilla);
     Random random = new Random();
     ArrayList<DefaultTableModel> soluciones = new ArrayList<DefaultTableModel>();
@@ -48,14 +56,17 @@ public class Tablero extends javax.swing.JFrame {
         initComponents();
         //Añadimos los elementos de dificultad al comboBox
         jcbDificultad.removeAllItems();
-        jcbDificultad.addItem("1");
-        jcbDificultad.addItem("2");
-        jcbDificultad.addItem("3");
+        jcbDificultad.addItem("Simple");
+        jcbDificultad.addItem("Media");
+        jcbDificultad.addItem("Difícil");
         jcbDificultad.setSelectedIndex(1);
         //Modificamos propiedades de la interfaz
         this.setLocation(500, 250);
         this.setResizable(false);  
         this.setTitle("Un divertido juego");
+        
+        fileChooser =  new JFileChooser(); //Inicializamos el selector de archivos
+        fileChooser.setDialogTitle("Seleccione el archivo TXT del tablero");
         //ImageIcon im = new ImageIcon(getClass().getResource("equipo.jpg"));
         //setIconImage(im.getImage());
 
@@ -79,23 +90,26 @@ public class Tablero extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         jcbDificultad = new javax.swing.JComboBox<>();
         btnGenerar = new javax.swing.JButton();
-        jLabel5 = new javax.swing.JLabel();
+        jLblTablero = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTableTablero = new javax.swing.JTable();
         jbtnGuardarTexto = new javax.swing.JButton();
         jbtnGuardarPNG = new javax.swing.JButton();
         jbtnSolucionar = new javax.swing.JButton();
         jLabel7 = new javax.swing.JLabel();
+        btnCargar = new javax.swing.JButton();
         jLabel6 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel4.setFont(new java.awt.Font("Bitstream Charter", 0, 36)); // NOI18N
+        jLabel4.setForeground(new java.awt.Color(0, 0, 0));
         jLabel4.setText("Hidato");
         getContentPane().add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 10, 117, 34));
 
         jLabel1.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(0, 0, 0));
         jLabel1.setText("Filas:");
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 60, -1, 20));
 
@@ -103,6 +117,7 @@ public class Tablero extends javax.swing.JFrame {
         getContentPane().add(jTextFil, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 60, 46, -1));
 
         jLabel2.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(0, 0, 0));
         jLabel2.setText("Columnas:");
         getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 60, -1, 20));
 
@@ -115,6 +130,7 @@ public class Tablero extends javax.swing.JFrame {
         getContentPane().add(jTextCol, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 60, 45, -1));
 
         jLabel3.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        jLabel3.setForeground(new java.awt.Color(0, 0, 0));
         jLabel3.setText("Dificultad:");
         getContentPane().add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 60, -1, 30));
 
@@ -129,11 +145,12 @@ public class Tablero extends javax.swing.JFrame {
                 btnGenerarActionPerformed(evt);
             }
         });
-        getContentPane().add(btnGenerar, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 60, -1, -1));
+        getContentPane().add(btnGenerar, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 70, 90, -1));
 
-        jLabel5.setFont(new java.awt.Font("Bitstream Charter", 0, 36)); // NOI18N
-        jLabel5.setText("Tablero generado");
-        getContentPane().add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 90, -1, 50));
+        jLblTablero.setFont(new java.awt.Font("Bitstream Charter", 0, 36)); // NOI18N
+        jLblTablero.setForeground(new java.awt.Color(0, 0, 0));
+        jLblTablero.setText("Tablero generado");
+        getContentPane().add(jLblTablero, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 90, -1, 50));
 
         jTableTablero.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         jTableTablero.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
@@ -155,7 +172,7 @@ public class Tablero extends javax.swing.JFrame {
         jTableTablero.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jScrollPane1.setViewportView(jTableTablero);
 
-        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 150, 474, 216));
+        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 150, 490, 216));
 
         jbtnGuardarTexto.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         jbtnGuardarTexto.setText("Guardar como Texto");
@@ -173,7 +190,7 @@ public class Tablero extends javax.swing.JFrame {
                 jbtnGuardarPNGActionPerformed(evt);
             }
         });
-        getContentPane().add(jbtnGuardarPNG, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 380, -1, -1));
+        getContentPane().add(jbtnGuardarPNG, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 380, -1, -1));
 
         jbtnSolucionar.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         jbtnSolucionar.setText("Solución");
@@ -189,11 +206,21 @@ public class Tablero extends javax.swing.JFrame {
         jLabel7.setText("por: Alejandro Gallego");
         getContentPane().add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 10, -1, -1));
 
+        btnCargar.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
+        btnCargar.setText("Cargar");
+        btnCargar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCargarActionPerformed(evt);
+            }
+        });
+        getContentPane().add(btnCargar, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 40, 90, -1));
+
+        jLabel6.setForeground(new java.awt.Color(0, 0, 0));
         jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/hidato/fondo.jpg"))); // NOI18N
         jLabel6.setText("por: Alejandro Gallego");
         jLabel6.setToolTipText("");
-        getContentPane().add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 510, 420));
+        getContentPane().add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 540, 440));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -208,10 +235,16 @@ public class Tablero extends javax.swing.JFrame {
             //Obtenemos las características del nuevo tablero
             filas = Integer.valueOf(jTextFil.getText());
             columnas = Integer.valueOf(jTextCol.getText());
-            dificultad = Integer.valueOf(jcbDificultad.getItemAt(jcbDificultad.getSelectedIndex()));
+            dificultad = jcbDificultad.getSelectedIndex()+1;
             //Verificamos los datos ingresados
-            if (filas <= 0 || columnas <= 0) {
-                JOptionPane.showMessageDialog(rootPane, "Digite sólo números mayores que cero", "Error numérico", JOptionPane.ERROR_MESSAGE);
+            if (filas < 3 || columnas < 3) {
+                JOptionPane.showMessageDialog(rootPane, "Digite sólo números mayores o iguales que tres (3)", "Error numérico", JOptionPane.ERROR_MESSAGE);
+                return;
+                //System.out.println("Las filas o columnas debe ser mayor que 0");            
+            }
+            
+            if (filas > 100 || columnas > 100) {
+                JOptionPane.showMessageDialog(rootPane, "Digite sólo números menores o iguales que cien (100)", "Error numérico", JOptionPane.ERROR_MESSAGE);
                 return;
                 //System.out.println("Las filas o columnas debe ser mayor que 0");            
             }
@@ -228,14 +261,14 @@ public class Tablero extends javax.swing.JFrame {
         long inicio = System.currentTimeMillis();
         //Generamos el tablero
         generarTablero();
-        if (filas == 1 && columnas == 1 && modelTablero == null) {
+        /*if (filas == 1 && columnas == 1 && modelTablero == null) {
             modelTablero = new DefaultTableModel(filas, columnas);
             modelTablero.setValueAt(1, 0, 0);
             jTableTablero.setModel(modelTablero);
             jTableTablero.getTableHeader().setUI(null);
-        }
+        }*/
         //imprimirTablero(modelTablero);
-        System.out.println("FC: "+modelTablero.getColumnCount()+" "+modelTablero.getRowCount());
+        //System.out.println("FC: "+modelTablero.getColumnCount()+" "+modelTablero.getRowCount());
         long fin = System.currentTimeMillis();
         segundos = (fin - inicio) / 1000; //Obtenemos el tiempo en segundos
         //System.out.println("Tardó: " + segundos + " segundos");
@@ -249,6 +282,8 @@ public class Tablero extends javax.swing.JFrame {
         //Modificamos y habilitamos las cuadrículas a la tabla
         jTableTablero.setShowGrid(true);
         jTableTablero.setGridColor(Color.BLACK);
+        cargado = false;
+        jLblTablero.setText("Tablero generado");
     }//GEN-LAST:event_btnGenerarActionPerformed
 
     private void jbtnGuardarPNGActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnGuardarPNGActionPerformed
@@ -286,22 +321,43 @@ public class Tablero extends javax.swing.JFrame {
     }//GEN-LAST:event_jbtnGuardarTextoActionPerformed
 
     private void jbtnSolucionarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnSolucionarActionPerformed
-        //Obtenemos el modelo del tablero actual
-        DefaultTableModel modelSol = (DefaultTableModel) jTableTablero.getModel();
-        //Validamos que el tablero haya sido generado
-        if(modelSol == null || modelTablero == null){
-            JOptionPane.showMessageDialog(rootPane, "El tablero aún no se ha generado ", "Tablero vacío", JOptionPane.WARNING_MESSAGE);
+        if (cargado){
+            hallarSolucion();
+        }else{
+            //Obtenemos el modelo del tablero actual
+            DefaultTableModel modelSol = (DefaultTableModel) jTableTablero.getModel();
+            //Validamos que el tablero haya sido generado
+            if(modelSol == null || modelTablero == null || modelSol.getColumnCount() < 3 || modelSol.getRowCount() < 3){
+                JOptionPane.showMessageDialog(rootPane, "El tablero aún no se ha creado ", "Tablero vacío", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            //Llenamos el tablero según su solución
+            for (int i = 0; i < filas; i++) {
+                for (int j = 0; j < columnas; j++) {
+                    modelSol.setValueAt(modelTablero.getValueAt(i, j), i, j);
+                }
+            }
+            //Actualizamos el modelo del tablero actual
+            jTableTablero.setModel(modelSol);
+        }
+    }//GEN-LAST:event_jbtnSolucionarActionPerformed
+
+    private void btnCargarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCargarActionPerformed
+        
+        int res = fileChooser.showOpenDialog(this);
+        
+        if (res == JFileChooser.APPROVE_OPTION) {
+            File file = fileChooser.getSelectedFile();
+            //This is where a real application would open the file.
+            System.out.println("Opening: " + file.getName() + "   " + file.getAbsolutePath());
+        } else {
+            System.out.println("Open command cancelled by user");
             return;
         }
-        //Llenamos el tablero según su solución
-        for (int i = 0; i < filas; i++) {
-            for (int j = 0; j < columnas; j++) {
-                modelSol.setValueAt(modelTablero.getValueAt(i, j), i, j);
-            }
-        }
-        //Actualizamos el modelo del tablero actual
-        jTableTablero.setModel(modelSol);
-    }//GEN-LAST:event_jbtnSolucionarActionPerformed
+
+        jLblTablero.setText("Tablero cargado");
+        cargado = true;
+    }//GEN-LAST:event_btnCargarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -339,14 +395,15 @@ public class Tablero extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnCargar;
     private javax.swing.JButton btnGenerar;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLblTablero;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTableTablero;
     private javax.swing.JTextField jTextCol;
@@ -362,13 +419,13 @@ public class Tablero extends javax.swing.JFrame {
         //Calculamos una posición en el tablero de forma aleatoria
         semilla = Calendar.getInstance().getTimeInMillis();
         random.setSeed(semilla);
-        int fRandom = random.nextInt(filas) + 1; //Fila aleatoria
-        int cRandom = random.nextInt(columnas) + 1; //Columna aleatoria
-        System.out.println("Valor: " + fRandom + " " + cRandom);
-        Nodo n = new Nodo(1, fRandom, cRandom); //Creamos un nodo(casilla) con esos valores
+        fPrimero = random.nextInt(filas) + 1; //Fila aleatoria
+        cPrimero = random.nextInt(columnas) + 1; //Columna aleatoria
+        System.out.println("Valor: " + fPrimero + " " + cPrimero);
+        Nodo n = new Nodo(1, fPrimero, cPrimero); //Creamos un nodo(casilla) con esos valores
         //Nodo n = new Nodo(1, 0, 0);
         //imprimirVecinos(calculeVecinos(n));
-        modelTablero.setValueAt(1, fRandom - 1, cRandom - 1); //Ponemos este valor en el tablero
+        modelTablero.setValueAt(1, fPrimero - 1, cPrimero - 1); //Ponemos este valor en el tablero
         busqueSolucion(n); //Buscamos una solución con el valor que tenemos (la primera posicón)
         //System.out.println("Se han encontrado " + soluciones.size() + " soluciones");
         if (soluciones.isEmpty()) { //Verificamos que se haya encontrado una solución
@@ -401,8 +458,12 @@ public class Tablero extends javax.swing.JFrame {
         //Entre más dificil menos casillas de van a mostrar, pero al menos se mostrará 1
         casillasMostrar = Math.max(casillasMostrar, 1);
 
-        //System.out.println("Casillas: " + casillasMostrar);
-
+        //System.out.println("Primero: " +fPrimero + " " + cPrimero + " Ultimo: " + fUltimo+" "+ cUltimo);
+        model.setValueAt(modelTablero.getValueAt(fPrimero-1, cPrimero-1), fPrimero-1, cPrimero-1);
+        model.setValueAt(modelTablero.getValueAt(fUltimo-1, cUltimo-1), fUltimo-1, cUltimo-1);
+        
+        casillasMostrar -= 2;        
+        
         semilla = Calendar.getInstance().getTimeInMillis();
         random.setSeed(semilla);
         //modelTablero = new DefaultTableModel(filas, columnas);
@@ -473,6 +534,8 @@ public class Tablero extends javax.swing.JFrame {
                         //imprimirTablero(modelTablero);
                         //Por lo tanto, se añade esta solución a la lista de soluciones
                         soluciones.add(nuevoTablero(modelTablero));
+                        fUltimo = v.getFila();
+                        cUltimo = v.getColumna();
                         exito = true;//Para no seguir buscando solución, si se quita esto se encontrarán todas las soluciones posibles
                     }
                     //modelTablero.setValueAt(null, v.getFila() - 1, v.getColumna() - 1);
@@ -604,7 +667,7 @@ public class Tablero extends javax.swing.JFrame {
         
         fw.write(filas+" "+columnas+" "+dificultad+" "+listPistas.size()+"\n"); //Se escribe las propiedades del tablero
         for(Nodo n: listPistas){ //Por cada pista en el tablero
-            fw.write(n.getFila()+" "+n.getColumna()+" "+(listPistas.indexOf(n)+1)+"\n"); //Se escribe en el archivo de texto
+            fw.write(n.getFila()+" "+n.getColumna()+" "+n.getNumero()+"\n"); //Se escribe en el archivo de texto
         }
         fw.write(segundos+""); //Se escribe el tiempo que se demoró en generar el tablero
         fw.close(); //Se cierra el archivo
@@ -623,7 +686,7 @@ public class Tablero extends javax.swing.JFrame {
         for (int i = 0; i < filas; i++) {
             for (int j = 0; j < columnas; j++) {
                 if(model.getValueAt(i, j) != null){ //Se verifica que sea pista
-                    listPistas.add(new Nodo(1, i+1, j+1)); //Y se agrega a la lista
+                    listPistas.add(new Nodo( (int)model.getValueAt(i, j), i+1, j+1)); //Y se agrega a la lista
                 }
             }
         }
@@ -631,6 +694,10 @@ public class Tablero extends javax.swing.JFrame {
         //listPistas.add(new Nodo(23, 1, 9));
         //listPistas.add(new Nodo(45, 5, 1));
         //listPistas.add(new Nodo(42, 1, 6));
+    }
+
+    private void hallarSolucion() {
+        System.out.println("Sol otro lado");
     }
 
     /*private void colorearTablero() {
