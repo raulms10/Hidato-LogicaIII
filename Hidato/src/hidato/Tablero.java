@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Random;
+import java.util.StringTokenizer;
 import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -41,7 +42,7 @@ public class Tablero extends javax.swing.JFrame {
     private int dificultad = 3;
     ArrayList<Nodo> listPistas;
     private boolean exito = false;
-    private boolean cargado = false; 
+    private boolean cargado = false;
     long semilla = Calendar.getInstance().getTimeInMillis();
     float segundos;
     private JFileChooser fileChooser; // Selector de archivos
@@ -64,10 +65,10 @@ public class Tablero extends javax.swing.JFrame {
         jcbDificultad.setSelectedIndex(1);
         //Modificamos propiedades de la interfaz
         this.setLocation(500, 250);
-        this.setResizable(false);  
+        this.setResizable(false);
         this.setTitle("Un divertido juego");
-        
-        fileChooser =  new JFileChooser(); //Inicializamos el selector de archivos
+
+        fileChooser = new JFileChooser(); //Inicializamos el selector de archivos
         fileChooser.setDialogTitle("Seleccione el archivo TXT del tablero");
         FileNameExtensionFilter filter = new FileNameExtensionFilter("Archivos de texto (*.txt)", "txt");
         fileChooser.setFileFilter(filter);
@@ -102,18 +103,19 @@ public class Tablero extends javax.swing.JFrame {
         jbtnSolucionar = new javax.swing.JButton();
         jLabel7 = new javax.swing.JLabel();
         btnCargar = new javax.swing.JButton();
+        lblInfo = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel4.setFont(new java.awt.Font("Bitstream Charter", 0, 36)); // NOI18N
-        jLabel4.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel4.setForeground(new java.awt.Color(164, 229, 236));
         jLabel4.setText("Hidato");
         getContentPane().add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 10, 117, 34));
 
         jLabel1.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel1.setForeground(new java.awt.Color(164, 229, 236));
         jLabel1.setText("Filas:");
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 60, -1, 20));
 
@@ -121,7 +123,7 @@ public class Tablero extends javax.swing.JFrame {
         getContentPane().add(jTextFil, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 60, 46, -1));
 
         jLabel2.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
-        jLabel2.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel2.setForeground(new java.awt.Color(164, 229, 236));
         jLabel2.setText("Columnas:");
         getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 60, -1, 20));
 
@@ -134,7 +136,7 @@ public class Tablero extends javax.swing.JFrame {
         getContentPane().add(jTextCol, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 60, 45, -1));
 
         jLabel3.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
-        jLabel3.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel3.setForeground(new java.awt.Color(164, 229, 236));
         jLabel3.setText("Dificultad:");
         getContentPane().add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 60, -1, 30));
 
@@ -152,9 +154,9 @@ public class Tablero extends javax.swing.JFrame {
         getContentPane().add(btnGenerar, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 70, 90, -1));
 
         jLblTablero.setFont(new java.awt.Font("Bitstream Charter", 0, 36)); // NOI18N
-        jLblTablero.setForeground(new java.awt.Color(0, 0, 0));
+        jLblTablero.setForeground(new java.awt.Color(164, 229, 236));
         jLblTablero.setText("Tablero generado");
-        getContentPane().add(jLblTablero, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 90, -1, 50));
+        getContentPane().add(jLblTablero, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 90, -1, 40));
 
         jTableTablero.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         jTableTablero.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
@@ -219,7 +221,14 @@ public class Tablero extends javax.swing.JFrame {
         });
         getContentPane().add(btnCargar, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 40, 90, -1));
 
-        jLabel6.setForeground(new java.awt.Color(0, 0, 0));
+        lblInfo.setBackground(new java.awt.Color(220, 210, 201));
+        lblInfo.setFont(new java.awt.Font("FreeSans", 0, 14)); // NOI18N
+        lblInfo.setForeground(new java.awt.Color(171, 193, 241));
+        lblInfo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblInfo.setText("Filas: 4 <|> Columnas: 5 <|> Dificultad: Media <|> Pistas: 3");
+        getContentPane().add(lblInfo, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 130, 490, 20));
+
+        jLabel6.setForeground(new java.awt.Color(171, 193, 241));
         jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/hidato/fondo.jpg"))); // NOI18N
         jLabel6.setText("por: Alejandro Gallego");
@@ -235,26 +244,27 @@ public class Tablero extends javax.swing.JFrame {
 
     private void btnGenerarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerarActionPerformed
         jTableTablero.setModel(new DefaultTableModel()); //Reseteamos el tablero
+        lblInfo.setText("");
         try {
             //Obtenemos las características del nuevo tablero
             filas = Integer.valueOf(jTextFil.getText());
             columnas = Integer.valueOf(jTextCol.getText());
-            dificultad = jcbDificultad.getSelectedIndex()+1;
+            dificultad = jcbDificultad.getSelectedIndex() + 1;
             //Verificamos los datos ingresados
             if (filas < 3 || columnas < 3) {
-                JOptionPane.showMessageDialog(rootPane, "Digite sólo números mayores o iguales que tres (3)", "Error numérico", JOptionPane.ERROR_MESSAGE);
-                return;
-                //System.out.println("Las filas o columnas debe ser mayor que 0");            
-            }
-            
-            if (filas > 100 || columnas > 100) {
-                JOptionPane.showMessageDialog(rootPane, "Digite sólo números menores o iguales que cien (100)", "Error numérico", JOptionPane.ERROR_MESSAGE);
+                muestreDialogoMsg("Digite sólo números mayores o iguales que tres (3)", "Error numérico", JOptionPane.ERROR_MESSAGE);
                 return;
                 //System.out.println("Las filas o columnas debe ser mayor que 0");            
             }
 
-        }catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(rootPane, "Digite sólo números", "Error de formato", JOptionPane.ERROR_MESSAGE);
+            if (filas > 100 || columnas > 100) {
+                muestreDialogoMsg("Digite sólo números menores o iguales que cien (100)", "Error numérico", JOptionPane.ERROR_MESSAGE);
+                return;
+                //System.out.println("Las filas o columnas debe ser mayor que 0");            
+            }
+
+        } catch (NumberFormatException e) {
+            muestreDialogoMsg("Digite sólo números", "Error de formato", JOptionPane.ERROR_MESSAGE);
             return;
         }
         //Reseteamos las varibales
@@ -280,9 +290,10 @@ public class Tablero extends javax.swing.JFrame {
         //colorearTablero();
         //Creamos nuestro Renderer para poder editar los colores a las celdas
         modificarRenderer();
-        
+
         cargado = false;
         jLblTablero.setText("Tablero generado");
+        lblInfo.setText("Filas: " + filas + " <|> Columnas: " + columnas + " <|> Dificultad: " + jcbDificultad.getItemAt(dificultad - 1) + " <|> Pistas: " + listPistas.size());
     }//GEN-LAST:event_btnGenerarActionPerformed
 
     private void jbtnGuardarPNGActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnGuardarPNGActionPerformed
@@ -293,7 +304,7 @@ public class Tablero extends javax.swing.JFrame {
             return;
         }
         if ("".equals(nombre.replace(" ", ""))) {
-            JOptionPane.showMessageDialog(rootPane, "El nombre de la imagen no puede estar vacío", "Error falta nombre", JOptionPane.WARNING_MESSAGE);
+            muestreDialogoMsg("El nombre de la imagen no puede estar vacío", "Error falta nombre", JOptionPane.WARNING_MESSAGE);
             return;
         }
         //Guardamos la imagen en PNG
@@ -309,27 +320,27 @@ public class Tablero extends javax.swing.JFrame {
             }
             //Validamos el nombre
             if ("".equals(nombre.replace(" ", ""))) {
-                JOptionPane.showMessageDialog(rootPane, "El nombre del archivo de text no puede estar vacío", "Error falta nombre", JOptionPane.WARNING_MESSAGE);
+                muestreDialogoMsg("El nombre del archivo de text no puede estar vacío", "Error falta nombre", JOptionPane.WARNING_MESSAGE);
                 return;
             }
             //Guardamos el tablero en el archivo TXT
             guardarTableroEnTXT(jTableTablero, nombre.replace(" ", ""));
         } catch (IOException ex) {
-            JOptionPane.showMessageDialog(rootPane, "Ha ocurrido un error al tratar de crear el archivo TXT", "Error de escritura", JOptionPane.ERROR_MESSAGE);
+            muestreDialogoMsg("Ha ocurrido un error al tratar de crear el archivo TXT", "Error de escritura", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_jbtnGuardarTextoActionPerformed
 
     private void jbtnSolucionarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnSolucionarActionPerformed
-        if (cargado){
+        //Obtenemos el modelo del tablero actual
+        DefaultTableModel modelSol = (DefaultTableModel) jTableTablero.getModel();
+        //Validamos que el tablero haya sido generado
+        if (modelSol == null || modelSol.getColumnCount() < 3 || modelSol.getRowCount() < 3) {
+            muestreDialogoMsg("El tablero aún no se ha creado", "Tablero vacío", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        if (cargado) {
             hallarSolucion();
-        }else{
-            //Obtenemos el modelo del tablero actual
-            DefaultTableModel modelSol = (DefaultTableModel) jTableTablero.getModel();
-            //Validamos que el tablero haya sido generado
-            if(modelSol == null || modelTablero == null || modelSol.getColumnCount() < 3 || modelSol.getRowCount() < 3){
-                JOptionPane.showMessageDialog(rootPane, "El tablero aún no se ha creado ", "Tablero vacío", JOptionPane.WARNING_MESSAGE);
-                return;
-            }
+        } else {
             //Llenamos el tablero según su solución
             for (int i = 0; i < filas; i++) {
                 for (int j = 0; j < columnas; j++) {
@@ -342,44 +353,88 @@ public class Tablero extends javax.swing.JFrame {
     }//GEN-LAST:event_jbtnSolucionarActionPerformed
 
     private void btnCargarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCargarActionPerformed
+        jTableTablero.setModel(new DefaultTableModel()); //Reseteamos el tablero
+        lblInfo.setText("");
+        
+        exito = false;
+        soluciones = new ArrayList<>();
+        listPistas = new ArrayList<>();
+        DefaultTableModel model;
+        
         //Invocamos el selector de archivos
         int res = fileChooser.showOpenDialog(this);
         File file = null;
         //Comprobamos el resultado del selector
         if (res == JFileChooser.APPROVE_OPTION) {
             file = fileChooser.getSelectedFile();
-            System.out.println("Abriendo: " + file.getName() + "   " + file.getAbsolutePath());
+            //System.out.println("Abriendo: " + file.getName() + "   " + file.getAbsolutePath());
         } else {
             return;
         }
-        
+
         //Verificamos que esté permitido el acceso al archivo seleccionado
-        if(file.canRead()){
+        if (file.canRead()) {
             try {
                 String linea;
                 FileReader fr = new FileReader(file);
                 BufferedReader br = new BufferedReader(fr);
                 //Leeemos el archivo línea a línea
+                StringTokenizer st;
+                int auxF, auxC, auxV;
+                
+                linea = br.readLine();
+                if(linea == null){
+                    muestreDialogoMsg("El archivo TXT seleccionado no cumple con el formato deseado", "Error de formato", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                st = new StringTokenizer(linea, " ");
+                if (st.countTokens() == 4) {
+                    filas = Integer.parseInt(st.nextToken());
+                    columnas = Integer.parseInt(st.nextToken());
+                    dificultad = Integer.parseInt(st.nextToken());
+                }else{
+                    muestreDialogoMsg("El archivo TXT seleccionado no cumple con el formato deseado", "Error de formato", JOptionPane.ERROR_MESSAGE);
+                }
+                //Creamos un nuevo tablero (modelo) que será e tablero que se le mostrará añ usuario con sólo las pistas
+                model = new DefaultTableModel(filas, columnas);
                 while ((linea = br.readLine()) != null) {
-                    System.out.println(linea);
+                    //System.out.println(linea);
+                    st = new StringTokenizer(linea, " ");
+                    try {
+                        if (st.countTokens() == 3) {
+                            auxF = Integer.parseInt(st.nextToken());
+                            auxC = Integer.parseInt(st.nextToken());
+                            auxV = Integer.parseInt(st.nextToken());
+                            listPistas.add(new Nodo(auxV, auxF, auxC));
+                            model.setValueAt(auxV, auxF-1, auxC-1);
+                        }else if(st.countTokens() == 1){
+                            segundos = Float.parseFloat(st.nextToken());
+                            //System.out.println("Seg: " + segundos);
+                        }
+                    } catch (NumberFormatException e) {
+                        muestreDialogoMsg("El archivo TXT seleccionado no cumple con el formato deseado", "Error de formato", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
                 }
                 fr.close();
                 br.close();
             } catch (FileNotFoundException ex) {
-                JOptionPane.showMessageDialog(rootPane, "No se ha encontrado el archivo", "Error", JOptionPane.ERROR_MESSAGE);
+                muestreDialogoMsg("No se ha encontrado el archivo", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             } catch (IOException ex) {
-                JOptionPane.showMessageDialog(rootPane, "Ha ocurrido un error en la lectura del archivo", "Error", JOptionPane.ERROR_MESSAGE);
+                muestreDialogoMsg("Ha ocurrido un error en la lectura del archivo", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-        }else{
-            JOptionPane.showMessageDialog(rootPane, "El archivo no pudo ser léido", "Error", JOptionPane.ERROR_MESSAGE);
+        } else {
+            muestreDialogoMsg("El archivo no pudo ser léido", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        
+        jTableTablero.getTableHeader().setUI(null); //Quitamos el header del JTable
+        jTableTablero.setModel(model);
         modificarRenderer();
         jLblTablero.setText("Tablero cargado");
         cargado = true;
+        lblInfo.setText("Filas: " + filas + " <|> Columnas: " + columnas + " <|> Dificultad: " + jcbDificultad.getItemAt(dificultad - 1) + " <|> Pistas: " + listPistas.size());
     }//GEN-LAST:event_btnCargarActionPerformed
 
     /**
@@ -435,8 +490,33 @@ public class Tablero extends javax.swing.JFrame {
     private javax.swing.JButton jbtnGuardarTexto;
     private javax.swing.JButton jbtnSolucionar;
     private javax.swing.JComboBox<String> jcbDificultad;
+    private javax.swing.JLabel lblInfo;
     // End of variables declaration//GEN-END:variables
 
+    private Nodo primerNodo(){
+        Nodo n = null;
+        for (Nodo v : listPistas) {
+            if (v.getNumero() == 1) {
+                return v;
+            }
+        }
+        return n;
+    }
+    
+    private DefaultTableModel solucioneTablero(){
+        //Creamos un modelo(tablero) con las filas y columnas ingresada
+        modelTablero = (DefaultTableModel) jTableTablero.getModel();
+        busqueSolucion2(primerNodo()); //Buscamos una solución con el valor que tenemos (la primera posicón)
+        //System.out.println("Se han encontrado " + soluciones.size() + " soluciones");
+        if (soluciones.isEmpty()) { //Verificamos que se haya encontrado una solución
+            return null;
+            
+        }
+        //int sol = random.nextInt(soluciones.size());
+        //System.out.println("Mostrando solución " + sol);
+        return soluciones.get(0); //Tomanos la primera solución, el primer modelo
+    }
+    
     //Retorna un modelo(tablero) solucionado ubicando la primera casilla(1) aleatoriamente
     private DefaultTableModel creeTablero() {
         //Calculamos una posición en el tablero de forma aleatoria
@@ -471,10 +551,10 @@ public class Tablero extends javax.swing.JFrame {
         }
         //jTableTablero.setModel(modelTablero); //Actualizamos la interfaz gráfica
         jTableTablero.getTableHeader().setUI(null); //Quitamos el header del JTable
-        
+
         //Creamos un nuevo tablero (modelo) que será e tablero que se le mostrará añ usuario con sólo las pistas
         DefaultTableModel model = new DefaultTableModel(filas, columnas);
-        
+
         //Hallamos la cantidad de pistas a mostar en función de la dificultad
         int casillasMostrar = 100 - dificultad * 30; //Porcenteaje de casillas a mostrar
         casillasMostrar = (int) casillasMostrar * filas * columnas / 100; //Sacamos el porcentaje del total de casilas
@@ -482,11 +562,11 @@ public class Tablero extends javax.swing.JFrame {
         casillasMostrar = Math.max(casillasMostrar, 1);
 
         //System.out.println("Primero: " +fPrimero + " " + cPrimero + " Ultimo: " + fUltimo+" "+ cUltimo);
-        model.setValueAt(modelTablero.getValueAt(fPrimero-1, cPrimero-1), fPrimero-1, cPrimero-1);
-        model.setValueAt(modelTablero.getValueAt(fUltimo-1, cUltimo-1), fUltimo-1, cUltimo-1);
-        
-        casillasMostrar -= 2;        
-        
+        model.setValueAt(modelTablero.getValueAt(fPrimero - 1, cPrimero - 1), fPrimero - 1, cPrimero - 1);
+        model.setValueAt(modelTablero.getValueAt(fUltimo - 1, cUltimo - 1), fUltimo - 1, cUltimo - 1);
+
+        casillasMostrar -= 2;
+
         semilla = Calendar.getInstance().getTimeInMillis();
         random.setSeed(semilla);
         //modelTablero = new DefaultTableModel(filas, columnas);
@@ -528,6 +608,10 @@ public class Tablero extends javax.swing.JFrame {
     private boolean esValidoVecino(Nodo n) {
         return !calculeVecinos(n, modelTablero).isEmpty() || n.getNumero() >= filas * columnas;
     }
+    
+    private boolean esValidoVecino2(Nodo n) {
+        return !calculeVecinos2(n, modelTablero).isEmpty() || n.getNumero() >= filas * columnas;
+    }
 
     //Encuentra la solución (llena el tablero) en forma recursiva usando la técnica de programación con retroceso
     private void busqueSolucion(Nodo nodo) {
@@ -568,6 +652,44 @@ public class Tablero extends javax.swing.JFrame {
         }
     } //Se encuentra la primera solución
 
+    private void busqueSolucion2(Nodo nodo) {
+        //modelTablero.setValueAt(nodo.getNumero(), nodo.getFila()-1, nodo.getColumna()-1);
+        //Calculamos los vecinos de un nodo
+        ArrayList<Nodo> vecinos = calculeVecinos2(nodo, modelTablero);
+        //imprimirNodos(vecinos);
+        //Verificamos que aún no se haya encontrado solución
+        if (!exito) {
+            //Por cada vecino
+            for (Nodo v : vecinos) {
+                //Se verifica la validez del mismo
+                if (esValidoVecino2(v) && !v.isVisitado()) {
+                    //Se añade al tablero
+                    modelTablero.setValueAt(v.getNumero(), v.getFila() - 1, v.getColumna() - 1); //escriba(nodo)
+                    if (v.getNumero() < filas * columnas) { //Como no se ha llenado el tablero
+                        //Se sigue explorarndo las soluciones con las demás combinaciones
+                        busqueSolucion2(v);
+                        //Y si no se encunetra solución
+                        if (!exito) {
+                            //Se quita el nodo del tablero
+                            modelTablero.setValueAt(null, v.getFila() - 1, v.getColumna() - 1);
+                            v.setVisitado(true); // y se marca como visitado para no volver a usarlo 
+                        }
+                    } else {// Como ya se llenó el tablero, quiere decir que se encontró solución
+                        //System.out.println("Una solución");
+                        //imprimirTablero(modelTablero);
+                        //Por lo tanto, se añade esta solución a la lista de soluciones
+                        soluciones.add(nuevoTablero(modelTablero));
+                        fUltimo = v.getFila();
+                        cUltimo = v.getColumna();
+                        exito = true;//Para no seguir buscando solución, si se quita esto se encontrarán todas las soluciones posibles
+                    }
+                    //modelTablero.setValueAt(null, v.getFila() - 1, v.getColumna() - 1);
+                    //v.setVisitado(true);
+                }
+            }
+        }
+    } //Se encuentra la primera solución
+    
     /*private void busqueSolucion(Nodo nodo) {
         //modelTablero.setValueAt(nodo.getNumero(), nodo.getFila()-1, nodo.getColumna()-1);
         ArrayList<Nodo> vecinos = calculeVecinos(nodo);
@@ -607,7 +729,6 @@ public class Tablero extends javax.swing.JFrame {
             }            
         }
     }*/ //Encuentra todas las soluciones enviando como parámetro
-    
     //Encuentra los vecinos de un nodo según el número de fila y columna que tenga
     private ArrayList<Nodo> calculeVecinos(Nodo nodo, DefaultTableModel model) {
         ArrayList<Nodo> v = new ArrayList<Nodo>();
@@ -636,6 +757,26 @@ public class Tablero extends javax.swing.JFrame {
         return veci;*/
         return v;
     }
+    
+    private ArrayList<Nodo> calculeVecinos2(Nodo nodo, DefaultTableModel model) {
+        ArrayList<Nodo> v = new ArrayList<>();
+        int f = nodo.getFila(); //Se obtiene la fila
+        int c = nodo.getColumna(); //Se obtiene la columna
+        for (int i = f - 1; i <= f + 1; i++) {
+            for (int j = c - 1; j <= c + 1; j++) {
+                if ((i > 0 && j > 0 && i <= filas && j <= columnas) && (i != f || j != c)) {
+                    if (model.getValueAt(i - 1, j - 1) == null) {
+                        v.add(new Nodo(nodo.getNumero() + 1, i, j)); //Se añade a la lista de vecinos
+                    }else if(model.getValueAt(i - 1, j - 1).equals(nodo.getNumero()+1)){
+                        v = new ArrayList<>();
+                        v.add(new Nodo(nodo.getNumero() + 1, i, j));
+                        return v;
+                    }
+                }
+            }
+        }
+        return v;
+    }
 
     //Crea una nueva instancia(copia) del modelo enviado como parámetro
     private DefaultTableModel nuevoTablero(DefaultTableModel modelTablero) {
@@ -655,7 +796,7 @@ public class Tablero extends javax.swing.JFrame {
         int w = table.getWidth();
         int h = table.getHeight();
         if (w == 0 || h == 0) { //Se verifica que el tablero ya haya sido creado
-            JOptionPane.showMessageDialog(rootPane, "El tablero aún no se ha generado ", "Tablero vacío", JOptionPane.WARNING_MESSAGE);
+            muestreDialogoMsg("El tablero aún no se ha generado", "Tablero vacío", JOptionPane.WARNING_MESSAGE);
             return;
         }
         //Se crea el buffered
@@ -668,10 +809,10 @@ public class Tablero extends javax.swing.JFrame {
             String ruta = f.getAbsolutePath(); //Se obtiene la ruta de la imagen
             //System.out.println(ruta);
             ImageIO.write(bi, "png", f); //Se escribe en el archivo la imagen
-            JOptionPane.showMessageDialog(rootPane, "Ruta: " + ruta, "Imagen guardada", JOptionPane.INFORMATION_MESSAGE);
+            muestreDialogoMsg("Ruta: " + ruta, "Imagen guardada", JOptionPane.INFORMATION_MESSAGE);
         } catch (IOException ioe) {
             //System.out.println("write: " + ioe.getMessage());
-            JOptionPane.showMessageDialog(rootPane, "No se ha podido guardar la imagen", "Error de almacenamiento", JOptionPane.ERROR_MESSAGE);
+            muestreDialogoMsg("No se ha podido guardar la imagen", "Error de almacenamiento", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -680,24 +821,24 @@ public class Tablero extends javax.swing.JFrame {
         int w = table.getWidth();
         int h = table.getHeight();
         if (w == 0 || h == 0) { //Se verifica que el tablero ya haya sido creado
-            JOptionPane.showMessageDialog(rootPane, "El tablero aún no se ha generado ", "Tablero vacío", JOptionPane.WARNING_MESSAGE);
+            muestreDialogoMsg("El tablero aún no se ha generado", "Tablero vacío", JOptionPane.WARNING_MESSAGE);
             return;
         }
-        
+
         File fileTXT = new File(nombre + ".txt"); //Se crea el archivo de texto
         String ruta = fileTXT.getAbsolutePath(); //Se obtiene la ruta del archivo
         FileWriter fw = new FileWriter(fileTXT, false);
-        
-        fw.write(filas+" "+columnas+" "+dificultad+" "+listPistas.size()+"\n"); //Se escribe las propiedades del tablero
-        for(Nodo n: listPistas){ //Por cada pista en el tablero
-            fw.write(n.getFila()+" "+n.getColumna()+" "+n.getNumero()+"\n"); //Se escribe en el archivo de texto
+
+        fw.write(filas + " " + columnas + " " + dificultad + " " + listPistas.size() + "\n"); //Se escribe las propiedades del tablero
+        for (Nodo n : listPistas) { //Por cada pista en el tablero
+            fw.write(n.getFila() + " " + n.getColumna() + " " + n.getNumero() + "\n"); //Se escribe en el archivo de texto
         }
-        fw.write(segundos+""); //Se escribe el tiempo que se demoró en generar el tablero
+        fw.write(segundos + ""); //Se escribe el tiempo que se demoró en generar el tablero
         fw.close(); //Se cierra el archivo
-        
+
         //System.out.println(ruta);
-        JOptionPane.showMessageDialog(rootPane, "Ruta: " + ruta, "Archivo TXT guardado", JOptionPane.INFORMATION_MESSAGE);
-        
+        muestreDialogoMsg("Ruta: " + ruta, "Archivo TXT guardado", JOptionPane.INFORMATION_MESSAGE);
+
     }
 
     //Crea una lista con las pistas que se encuentran en el tablero
@@ -708,12 +849,12 @@ public class Tablero extends javax.swing.JFrame {
         //Por cada celda del tablero
         for (int i = 0; i < filas; i++) {
             for (int j = 0; j < columnas; j++) {
-                if(model.getValueAt(i, j) != null){ //Se verifica que sea pista
-                    listPistas.add(new Nodo( (int)model.getValueAt(i, j), i+1, j+1)); //Y se agrega a la lista
+                if (model.getValueAt(i, j) != null) { //Se verifica que sea pista
+                    listPistas.add(new Nodo((int) model.getValueAt(i, j), i + 1, j + 1)); //Y se agrega a la lista
                 }
             }
         }
-        
+
         //listPistas.add(new Nodo(23, 1, 9));
         //listPistas.add(new Nodo(45, 5, 1));
         //listPistas.add(new Nodo(42, 1, 6));
@@ -721,16 +862,28 @@ public class Tablero extends javax.swing.JFrame {
 
     private void hallarSolucion() {
         System.out.println("Sol otro lado");
+        DefaultTableModel modelSol = solucioneTablero();
+        if (modelSol == null) {
+            System.out.println("Sin solcución");
+            return;
+        }
+        jTableTablero.setModel(modelSol);
+//        modificarRenderer();      
+        
     }
 
     private void modificarRenderer() {
         MyRenderer myRenderer = new MyRenderer();
-        myRenderer.setInicial(nuevoTablero((DefaultTableModel) jTableTablero.getModel()));
+        //myRenderer.setInicial(nuevoTablero((DefaultTableModel) jTableTablero.getModel()));
         //myRenderer.setSolucion(modelTablero);
         jTableTablero.setDefaultRenderer(Object.class, myRenderer);
         //Modificamos y habilitamos las cuadrículas a la tabla
         jTableTablero.setShowGrid(true);
         jTableTablero.setGridColor(Color.BLACK);
+    }
+    
+    private void muestreDialogoMsg(String msg, String titulo, int tipo){
+        JOptionPane.showMessageDialog(rootPane, msg, titulo, tipo);
     }
 
     /*private void colorearTablero() {
@@ -760,51 +913,40 @@ public class Tablero extends javax.swing.JFrame {
         }
         //jTableTablero.setModel(modelColor);
     }*/
-    
     //Se usa para colorear el tablero
-    public class MyRenderer extends DefaultTableCellRenderer{
-        
-        private DefaultTableModel inicial; //Tablero con las pistas
+    public class MyRenderer extends DefaultTableCellRenderer {
+
         private Nodo actual = new Nodo(); //Nodo del tablero
-        
+
         //Este método se ejecuta cada vez que se cambie algún valor en el tablero
         @Override
-        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,boolean hasFocus, int row, int column) {
-            
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+
             //Se obtiene la celda 
             Component cell = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
             //Se le cambia el color de la letra
             cell.setForeground(Color.BLACK); //Letra de casillas ocupadas
-            
+
             //Se le cambia el color de la letra a la primera casilla del juego
-            
-            if(value != null && value.equals(1)){
-                    //cell.setBackground(Color.LIGHT_GRAY);
+            if (value != null && value.equals(1)) {
+                //cell.setBackground(Color.LIGHT_GRAY);
                 cell.setForeground(Color.RED); //Letra de primero
             }
             //Se le cambia el color de la letra a la última casilla del juego
-            if(value != null && value.equals(filas*columnas)){
-                    //cell.setBackground(Color.LIGHT_GRAY);
-                    cell.setForeground(Color.RED); //Letra de último
+            if (value != null && value.equals(filas * columnas)) {
+                //cell.setBackground(Color.LIGHT_GRAY);
+                cell.setForeground(Color.RED); //Letra de último
             }
-            
+
             //Se verifica que la celda(casilla) sea una pista
-            if(value != null){
+            if (value != null) {
                 cell.setBackground(new Color(102, 178, 255)); //Fondo casillas ocupadas (pistas)
-            }else{
+            } else {
                 cell.setBackground(new Color(0, 128, 255)); //Fondo de casillas vacías               
             }
 
             return cell;
         }
-
-        //Getter and Setter methods     
-        public DefaultTableModel getInicial() {
-            return inicial;
-        }
-
-        public void setInicial(DefaultTableModel inicial) {
-            this.inicial = inicial;
-        }       
     }
+    
 }
