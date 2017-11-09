@@ -5,8 +5,10 @@
  */
 package hidato;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
@@ -20,9 +22,13 @@ import java.util.Calendar;
 import java.util.Random;
 import java.util.StringTokenizer;
 import javax.imageio.ImageIO;
+import javax.swing.BorderFactory;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JProgressBar;
 import javax.swing.JTable;
+import javax.swing.border.Border;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
@@ -45,6 +51,7 @@ public class Tablero extends javax.swing.JFrame {
     private boolean cargado = false;
     long semilla = Calendar.getInstance().getTimeInMillis();
     float segundos;
+    float segSol;
     private JFileChooser fileChooser; // Selector de archivos
     //System.out.println("Semilla: " + semilla);
     Random random = new Random();
@@ -111,7 +118,7 @@ public class Tablero extends javax.swing.JFrame {
         jLabel4.setFont(new java.awt.Font("Bitstream Charter", 0, 36)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(164, 229, 236));
         jLabel4.setText("Hidato");
-        getContentPane().add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 10, 117, 34));
+        getContentPane().add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 10, 117, 34));
 
         jLabel1.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(164, 229, 236));
@@ -150,12 +157,13 @@ public class Tablero extends javax.swing.JFrame {
                 btnGenerarActionPerformed(evt);
             }
         });
-        getContentPane().add(btnGenerar, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 70, 90, -1));
+        getContentPane().add(btnGenerar, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 70, 90, -1));
 
         jLblTablero.setFont(new java.awt.Font("Bitstream Charter", 0, 36)); // NOI18N
         jLblTablero.setForeground(new java.awt.Color(164, 229, 236));
-        jLblTablero.setText("Tablero generado");
-        getContentPane().add(jLblTablero, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 90, -1, 40));
+        jLblTablero.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLblTablero.setText("Tablero");
+        getContentPane().add(jLblTablero, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 90, 510, 40));
 
         jTableTablero.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         jTableTablero.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
@@ -178,7 +186,7 @@ public class Tablero extends javax.swing.JFrame {
         jTableTablero.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jScrollPane1.setViewportView(jTableTablero);
 
-        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 150, 490, 216));
+        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 150, 510, 240));
 
         jbtnGuardarTexto.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         jbtnGuardarTexto.setText("Guardar como Texto");
@@ -187,7 +195,7 @@ public class Tablero extends javax.swing.JFrame {
                 jbtnGuardarTextoActionPerformed(evt);
             }
         });
-        getContentPane().add(jbtnGuardarTexto, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 380, -1, -1));
+        getContentPane().add(jbtnGuardarTexto, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 400, -1, -1));
 
         jbtnGuardarPNG.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         jbtnGuardarPNG.setText("Guardar como PNG");
@@ -196,7 +204,7 @@ public class Tablero extends javax.swing.JFrame {
                 jbtnGuardarPNGActionPerformed(evt);
             }
         });
-        getContentPane().add(jbtnGuardarPNG, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 380, -1, -1));
+        getContentPane().add(jbtnGuardarPNG, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 400, -1, -1));
 
         jbtnSolucionar.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         jbtnSolucionar.setText("Solución");
@@ -205,7 +213,7 @@ public class Tablero extends javax.swing.JFrame {
                 jbtnSolucionarActionPerformed(evt);
             }
         });
-        getContentPane().add(jbtnSolucionar, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 380, -1, -1));
+        getContentPane().add(jbtnSolucionar, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 400, -1, -1));
 
         jLabel7.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel7.setForeground(new java.awt.Color(204, 0, 0));
@@ -219,13 +227,13 @@ public class Tablero extends javax.swing.JFrame {
                 btnCargarActionPerformed(evt);
             }
         });
-        getContentPane().add(btnCargar, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 40, 90, -1));
+        getContentPane().add(btnCargar, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 40, 90, -1));
 
         lblInfo.setBackground(new java.awt.Color(220, 210, 201));
         lblInfo.setFont(new java.awt.Font("FreeSans", 0, 14)); // NOI18N
         lblInfo.setForeground(new java.awt.Color(171, 193, 241));
         lblInfo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        getContentPane().add(lblInfo, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 130, 490, 20));
+        getContentPane().add(lblInfo, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 130, 510, 20));
 
         jLabel6.setForeground(new java.awt.Color(171, 193, 241));
         jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -272,6 +280,7 @@ public class Tablero extends javax.swing.JFrame {
         listPistas = new ArrayList<Nodo>();
         //Obtenemos el tiempo para mirar cuanto tarda en generar el tablero
         long inicio = System.currentTimeMillis();
+       
         //Generamos el tablero
         generarTablero();
         /*if (filas == 1 && columnas == 1 && modelTablero == null) {
@@ -282,6 +291,7 @@ public class Tablero extends javax.swing.JFrame {
         }*/ //En caso de sea un tablero 1x1
         //imprimirTablero(modelTablero);
         //System.out.println("FC: "+modelTablero.getColumnCount()+" "+modelTablero.getRowCount());
+        //cargando.setVisible(false);
         long fin = System.currentTimeMillis();
         segundos = (float) ((fin - inicio) / 1000.0); //Obtenemos el tiempo en segundos
         //System.out.println("Tardó: " + segundos + " segundos " + "i: " + inicio + " f: " + fin);
@@ -520,7 +530,19 @@ public class Tablero extends javax.swing.JFrame {
         //Creamos un modelo(tablero) con las filas y columnas ingresada
         modelTablero = (DefaultTableModel) jTableTablero.getModel();
         copiaTablero = nuevoTablero(modelTablero);
-        busqueSolucion(primerNodo()); //Buscamos una solución con el valor que tenemos (la primera posicón)
+        
+        long inicio = System.currentTimeMillis();
+        JFrameCargando cargando = new JFrameCargando();//"Buscando solución");
+        cargando.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        cargando.setTitle("Buscando solución");
+        cargando.setLocation(500 + getWidth()/2 - cargando.getWidth()/2, 250+getHeight()/2 - cargando.getHeight()/2);
+        cargando.setVisible(true);
+        
+        busqueSolucion2(primerNodo()); //Buscamos una solución con el valor que tenemos (la primera posicón)
+        
+        long fin = System.currentTimeMillis();
+        segSol = (float) ((fin - inicio) / 1000.0);
+        cargando.setVisible(false);
         //System.out.println("Se han encontrado " + soluciones.size() + " soluciones");
         if (soluciones.isEmpty()) { //Verificamos que se haya encontrado una solución
             return null;
@@ -621,6 +643,10 @@ public class Tablero extends javax.swing.JFrame {
     private boolean esValidoVecino(Nodo n) {
         return !calculeVecinos(n, modelTablero).isEmpty() || n.getNumero() >= filas * columnas;
     }
+    
+    private boolean esValidoVecino2(Nodo n) {
+        return !calculeVecinos2(n).isEmpty() || n.getNumero() >= filas * columnas;
+    }
 
     //Encuentra la solución (llena el tablero) en forma recursiva usando la técnica de programación con retroceso
     private void busqueSolucion(Nodo nodo) {
@@ -653,6 +679,58 @@ public class Tablero extends javax.swing.JFrame {
                         fUltimo = v.getFila();
                         cUltimo = v.getColumna();
                         exito = true;//Para no seguir buscando solución, si se quita esto se encontrarán todas las soluciones posibles
+                    }
+                    //modelTablero.setValueAt(null, v.getFila() - 1, v.getColumna() - 1);
+                    //v.setVisitado(true);
+                }
+            }
+        }
+    } //Se encuentra la primera solución
+    
+    //Encuentra la solución (llena el tablero) en forma recursiva usando la técnica de programación con retroceso
+    private void busqueSolucion2(Nodo nodo) {
+        //modelTablero.setValueAt(nodo.getNumero(), nodo.getFila()-1, nodo.getColumna()-1);
+        //Calculamos los vecinos de un nodo
+        ArrayList<Nodo> vecinos = calculeVecinos2(nodo);//, modelTablero);
+        //imprimirNodos(vecinos);
+        //Verificamos que aún no se haya encontrado solución
+        if (!exito) {
+            //Por cada vecino
+            for (Nodo v : vecinos) {
+                //Se verifica la validez del mismo
+                if (esValidoVecino2(v) && !v.isVisitado()) {
+                    //Se añade al tablero
+                    //if(modelTablero.getValueAt(v.getFila() - 1, v.getColumna() - 1) != null){
+                    modelTablero.setValueAt(v.getNumero(), v.getFila() - 1, v.getColumna() - 1); //escriba(nodo)
+                    //}                    
+                    //System.out.println("N: " + v.getNumero() + " F: " + (v.getFila()-1) + " C: " + (v.getColumna()-1));
+                    //muestreDialogoMsg("ss", "sp", JOptionPane.WARNING_MESSAGE);
+                    /*try {
+                        //muestreDialogoMsg("Añadido", "AJa", JOptionPane.WARNING_MESSAGE);
+                        Thread.sleep(1000);
+                    } catch (InterruptedException ex) {
+                        System.out.println("Error: " + ex.getMessage());
+                    }*/
+                    if (v.getNumero() < filas * columnas) { //Como no se ha llenado el tablero
+                        //Se sigue explorarndo las soluciones con las demás combinaciones
+                        busqueSolucion2(v);
+                        //Y si no se encunetra solución
+                        if (!exito) {
+                            //Se quita el nodo del tablero
+                            if(copiaTablero.getValueAt(v.getFila() - 1, v.getColumna() - 1) == null){
+                                modelTablero.setValueAt(null, v.getFila() - 1, v.getColumna() - 1);
+                            }
+                            v.setVisitado(true); // y se marca como visitado para no volver a usarlo 
+                        }
+                    } else {// Como ya se llenó el tablero, quiere decir que se encontró solución
+                        //System.out.println("Una solución");
+                        //imprimirTablero(modelTablero);
+                        //Por lo tanto, se añade esta solución a la lista de soluciones
+                        soluciones.add(nuevoTablero(modelTablero));
+                        fUltimo = v.getFila();
+                        cUltimo = v.getColumna();
+                        exito = true;//Para no seguir buscando solución, si se quita esto se encontrarán todas las soluciones posibles
+                        //System.out.println("Exito");
                     }
                     //modelTablero.setValueAt(null, v.getFila() - 1, v.getColumna() - 1);
                     //v.setVisitado(true);
@@ -710,10 +788,6 @@ public class Tablero extends javax.swing.JFrame {
                 if ((i > 0 && j > 0 && i <= filas && j <= columnas) && (i != f || j != c)) {
                     if (model.getValueAt(i - 1, j - 1) == null) {
                         v.add(new Nodo(nodo.getNumero() + 1, i, j)); //Se añade a la lista de vecinos
-                    }else if(model.getValueAt(i - 1, j - 1).equals(nodo.getNumero()+1)){
-                        v = new ArrayList<>();
-                        v.add(new Nodo(nodo.getNumero() + 1, i, j));
-                        return v;
                     }
                 }
             }
@@ -730,6 +804,27 @@ public class Tablero extends javax.swing.JFrame {
             v.remove(pos);
         }
         return veci;*/
+        return v;
+    }
+    
+    private ArrayList<Nodo> calculeVecinos2(Nodo nodo){//, DefaultTableModel model) {
+        ArrayList<Nodo> v = new ArrayList<>();
+        int f = nodo.getFila(); //Se obtiene la fila
+        int c = nodo.getColumna(); //Se obtiene la columna
+        for (int i = f - 1; i <= f + 1; i++) {
+            for (int j = c - 1; j <= c + 1; j++) {
+                if ((i > 0 && j > 0 && i <= filas && j <= columnas) && (i != f || j != c)) {
+                    if (modelTablero.getValueAt(i - 1, j - 1) == null) {
+                        v.add(new Nodo(nodo.getNumero() + 1, i, j)); //Se añade a la lista de vecinos
+                    }else if(modelTablero.getValueAt(i - 1, j - 1).equals(nodo.getNumero()+1)){
+                        v = new ArrayList<>();
+                        v.add(new Nodo(nodo.getNumero() + 1, i, j));
+                        //System.out.println("Reset: "+ v.size() + " N: " + nodo.getNumero() + " i: " + (i-1) + " j: " + (j-1));
+                        return v;
+                    }
+                }
+            }
+        }
         return v;
     }
 
@@ -819,7 +914,7 @@ public class Tablero extends javax.swing.JFrame {
         //System.out.println("Sol otro lado");
         DefaultTableModel modelSol = solucioneTablero();
         if (modelSol == null) {
-            muestreDialogoMsg("No se ha podido encontrar una solución", "Sin solución", JOptionPane.INFORMATION_MESSAGE);
+            muestreDialogoMsg("No se ha podido encontrar una solución " + "("+ segSol +" segundos)", "Sin solución", JOptionPane.INFORMATION_MESSAGE);
             jTableTablero.setModel(copiaTablero);
             return;
         }
@@ -839,6 +934,7 @@ public class Tablero extends javax.swing.JFrame {
     }
     
     private void muestreDialogoMsg(String msg, String titulo, int tipo){
+        rootPane.setLocation(0, 0);
         JOptionPane.showMessageDialog(rootPane, msg, titulo, tipo);
     }
 
